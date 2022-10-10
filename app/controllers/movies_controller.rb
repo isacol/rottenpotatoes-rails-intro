@@ -22,10 +22,10 @@ class MoviesController < ApplicationController
       if params.has_key?(:sort)
         @movies = @movies.order(params[:sort])
         if params[:sort] == 'title'
-          @title_background = 'hilite bg-primary'
+          @title_b = 'hilite bg-warning'
         end
         if params[:sort] == 'release_date'
-          @release_date_background = 'hilite bg-primary'
+          @release_date_b = 'hilite bg-warning'
         end
       end
 

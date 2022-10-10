@@ -149,3 +149,40 @@ Processing by MoviesController#index as HTML
   Rendered movies/index.html.erb within layouts/application (2.4ms)
   Rendered layouts/_flash.erb (0.0ms)
 Completed 200 OK in 9ms (Views: 8.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/movies?utf8=%E2%9C%93&commit=Refresh" for 175.223.33.248 at 2022-10-10 06:11:04 +0000
+Cannot render console from 175.223.33.248! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by MoviesController#index as HTML
+  Parameters: {"utf8"=>"✓", "commit"=>"Refresh"}
+  [1m[35mMovie Load (0.2ms)[0m  SELECT "movies".* FROM "movies"
+  Rendered movies/index.html.erb within layouts/application (36.0ms)
+Completed 500 Internal Server Error in 45ms (ActiveRecord: 0.4ms)
+
+ActionView::Template::Error (undefined local variable or method `title_header' for #<#<Class:0x00007f09048eaee0>:0x00007f09048f7c80>
+Did you mean?  @title_header):
+     7:   <thead>
+     8:     <tr>
+     9:       <th>Movie Title</th>
+    10:        <th <%= link_to("Movie Title", movies_path(:sort => 'title', :ratings => @ratings_to_show_hash), :id => title_header)%></th>
+    11:       <th>Rating</th>
+    12:       <th>Release Date</th>
+    13:         <th <%= link_to("Release Date", movies_path(:sort => 'release', :ratings => @ratings_to_show_hash), :id => release_date_header)%></th>
+  app/views/movies/index.html.erb:10:in `_app_views_movies_index_html_erb___3153152072419307854_69838354079260'
+
+
+  Rendered /home/codio/.rvm/gems/ruby-2.6.6/gems/actionpack-4.2.11/lib/action_dispatch/middleware/templates/rescues/_source.erb (5.4ms)
+  Rendered /home/codio/.rvm/gems/ruby-2.6.6/gems/actionpack-4.2.11/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (2.3ms)
+  Rendered /home/codio/.rvm/gems/ruby-2.6.6/gems/actionpack-4.2.11/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (6.4ms)
+  Rendered /home/codio/.rvm/gems/ruby-2.6.6/gems/actionpack-4.2.11/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (22.8ms)
+
+
+Started GET "/movies?utf8=%E2%9C%93&commit=Refresh" for 175.223.33.248 at 2022-10-10 06:11:53 +0000
+Cannot render console from 175.223.33.248! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+Processing by MoviesController#index as HTML
+  Parameters: {"utf8"=>"✓", "commit"=>"Refresh"}
+  [1m[36mMovie Load (0.2ms)[0m  [1mSELECT "movies".* FROM "movies"[0m
+  Rendered movies/index.html.erb within layouts/application (3.3ms)
+  Rendered layouts/_flash.erb (0.4ms)
+Completed 200 OK in 238ms (Views: 237.5ms | ActiveRecord: 0.2ms)

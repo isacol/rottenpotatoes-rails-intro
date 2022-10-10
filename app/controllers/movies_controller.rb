@@ -15,7 +15,7 @@ class MoviesController < ApplicationController
         @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       end
       @movies = Movie.with_ratings(@ratings_to_show)
-
+      #lemme change this
       @title_header = ''
       @release_date_header = ''
 

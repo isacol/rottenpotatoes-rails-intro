@@ -12,9 +12,23 @@ class MoviesController < ApplicationController
       @ratings_to_show = []
       if params[:ratings].nil? == false
         @ratings_to_show = params[:ratings].keys()
+        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       end
       @movies = Movie.with_ratings(@ratings_to_show)
-      #redirect_to movies_path
+
+      @title_header = ''
+      @release_date_header = ''
+
+      if params.has_key?(:sort)
+        @movies = @movies.order(:params[sort])
+        if :params[sort] == 'title'
+          @title_header = 'hilite bg-warning'
+        end
+        if :params[sort] == 'release_date'
+          @release_date_header = 'hilite bg-warning'
+        end
+      end
+
     end
   
     def new

@@ -21,21 +21,7 @@ class MoviesController < ApplicationController
       @all_ratings = Movie.all_ratings
       @ratings_to_show = []
 
-      # if params[:ratings].nil? and params[:sort].nil? # if new call doesnt have params sort or ratings
-      #   if session[:ratings].nil?
-      #     ratings = session[:ratings]
-      #     redirect_to movies_path(:ratings => ratings)
-      #   elsif session[:sort].nil?
-      #     sort = session[:sort]
-      #     redirect_to movies_path(:sort => sort)
-      # end
-
       if !params.has_key?(:ratings) and !params.has_key?(:sort)
-        # if session.key?(:ratings) and session.key?(:sort)
-        #   ratings = session[:ratings]
-        #   sort = session[:sort]
-        #   redirect_to movies_path(:sort => sort, :ratings => ratings)
-        # end
         if session.key?(:ratings)
           ratings = session[:ratings]
           redirect_to movies_path(:ratings => ratings)

@@ -30,19 +30,32 @@ class MoviesController < ApplicationController
       #     redirect_to movies_path(:sort => sort)
       # end
 
-      if !params.has_key?(:ratings) and !params.has_key(:sort):
-        if session.has_key(:ratings)
+      if !params.has_key?(:ratings) and !params.has_key?(:sort)
+        # if session.key?(:ratings) and session.key?(:sort)
+        #   ratings = session[:ratings]
+        #   sort = session[:sort]
+        #   redirect_to movies_path(:sort => sort, :ratings => ratings)
+        # end
+        if session.key?(:ratings)
           ratings = session[:ratings]
+          redirect_to movies_path(:ratings => ratings)
         end
-        if
-      elsif params.has_key?(:ratings) and !params.has_key?(:sort)
+        if session.key?(:sort)
+          sort = session[:sort]
+          redirect_to movies_path(:sort => sort)
+        end
+      end
+
+      if params.has_key?(:ratings) and !params.has_key?(:sort)
         session[:ratings] = params[:ratings]
         if session.key?(:sort)
           sort = session[:ratings]
           ratings = params[:ratings]
           redirect_to movies_path(:sort => sort, :ratings => ratings)
         end
-      elsif params.has_key?(:sort) and !params.has_key(:ratings)
+      end
+      
+      if params.has_key?(:sort) and !params.has_key(:ratings)
         session[:sort] = params[:sort]
         if session.key?(:ratings)
           ratings = session[:ratings]

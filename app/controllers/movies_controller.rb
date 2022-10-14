@@ -16,62 +16,133 @@ class MoviesController < ApplicationController
     # if exsits sort/filter in params or session 
 
     #(something in the session, something in the param, nothing)
-    def index
-      #@movies = Movie.all
+    def index_broken
       @all_ratings = Movie.all_ratings
-      @ratings_to_show = []
+      @ratings_to_show = @all_ratings
 
-      if !params.has_key?(:ratings) and !params.has_key?(:sort)
+      if !params.key?(:ratings) and !params.has_key?(:sort)
         if session.key?(:ratings)
-          ratings = session[:ratings]
-          redirect_to movies_path(:ratings => ratings)
+          @ratings = session[:ratings]
+          redirect_to movies_path(ratings: @ratings) and return
         end
         if session.key?(:sort)
-          sort = session[:sort]
-          redirect_to movies_path(:sort => sort)
+          @sort = session[:sort]
+          redirect_to movies_path(sort: @sort) and return
         end
       end
 
       if params.has_key?(:ratings) and !params.has_key?(:sort)
         session[:ratings] = params[:ratings]
         if session.key?(:sort)
-          sort = session[:ratings]
-          ratings = params[:ratings]
-          redirect_to movies_path(:sort => sort, :ratings => ratings)
+          @sort = session[:ratings]
+          @ratings = params[:ratings]
+          redirect_to movies_path(sort: @sort, ratings: @ratings) and return
         end
       end
       
-      if params.has_key?(:sort) and !params.has_key(:ratings)
+      if params.has_key?(:sort) and !params.has_key?(:ratings)
         session[:sort] = params[:sort]
         if session.key?(:ratings)
-          ratings = session[:ratings]
-          sort = params[:sort]
-          redirect_to movies_path(:sort => sort, :ratings => ratings)
+          @ratings = session[:ratings]
+          @sort = params[:sort]
+          redirect_to movies_path(sort: @sort, ratings: @ratings) and return
         end
       end
-
-
-      #BELOW = PURE CODE. dont touch - ensure cases before this hit
-      if params.has_key?(:ratings)
+      #############
+      if params.key?(:ratings)
         @ratings_to_show = params[:ratings].keys()
-        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, '1']}]
+        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       end
-      
+
       @movies = Movie.with_ratings(@ratings_to_show)
 
       @title_header = ''
       @release_date_header = ''
 
       if params.has_key?(:sort)
-        @movies = @movies.order(params[:sort])
+        #@movies = @movies.order(params[:sort])
         if params[:sort] == 'title'
+          @movies = @movies.order('title')
           @title_bg = 'hilite bg-warning'
         end
         if params[:sort] == 'release_date'
+          @movies = @movies.order('release_date')
           @release_date_bg = 'hilite bg-warning'
         end
       end
 
+      #BELOW = PURE CODE. dont touch - ensure cases before this hit
+      # if params[:ratings].nil? == false #params.has_key?(:ratings)
+      #   @ratings_to_show = params[:ratings].keys()
+      #   @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, '1']}]
+      # end
+      
+      # @movies = Movie.with_ratings(@ratings_to_show)
+
+      # @title_header = ''
+      # @release_date_header = ''
+
+      # if params.has_key?(:sort)
+      #   @movies = @movies.order(params[:sort])
+      #   if params[:sort] == 'title'
+      #     @title_bg = 'hilite bg-warning'
+      #     #@movies = @movies.order(:title)
+      #   end
+      #   if params[:sort] == 'release_date'
+      #     @release_date_bg = 'hilite bg-warning'
+      #     #@movies = @movies.order(:release_date)
+      #   end
+      # end
+
+    end
+
+    def index
+      @all_ratings = Movie.all_ratings
+      @ratings_to_show = []
+
+      ratings = ''
+      sort = ''
+
+      if params.key?(:ratings)
+        session[:ratings] = params[:ratings]
+        @ratings_to_show = params[:ratings].keys()
+        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
+      elsif session.key?(:ratings)
+        ratings = session[:ratings]
+        redirect_to movies_path(:ratings => ratings) and return
+      else
+        @ratings_to_show = @all_ratings
+        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
+      end
+
+      @movies = Movie.with_ratings(@ratings_to_show)
+
+      @title_header = ''
+      @release_date_header = ''
+
+      if params.key?(:sort)
+        #@movies = @movies.order(params[:sort])
+        session[:sort] = params[:sort]
+        if params[:sort] == 'title'
+          @movies = @movies.order('title')
+          @title_bg = 'hilite bg-warning'
+        end
+        if params[:sort] == 'release_date'
+          @movies = @movies.order('release_date')
+          @release_date_bg = 'hilite bg-warning'
+        end
+      elsif session.key?(:sort)
+        if session[:sort] == 'title'
+          @movies = @movies.order('title')
+          @title_bg = 'hilite bg-warning'
+        end
+        if session[:sort] == 'release_date'
+          @movies = @movies.order('release_date')
+          @release_date_bg = 'hilite bg-warning'
+        end
+      else 
+        return
+      end
     end
   
     def new

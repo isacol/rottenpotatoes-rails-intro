@@ -16,10 +16,9 @@ class MoviesController < ApplicationController
     # if exsits sort/filter in params or session 
 
     #(something in the session, something in the param, nothing)
-    def index_broken
+    def index
       @all_ratings = Movie.all_ratings
       @ratings_to_show = @all_ratings
-
       if !params.key?(:ratings) and !params.has_key?(:sort)
         if session.key?(:ratings)
           @ratings = session[:ratings]
@@ -34,7 +33,7 @@ class MoviesController < ApplicationController
       if params.has_key?(:ratings) and !params.has_key?(:sort)
         session[:ratings] = params[:ratings]
         if session.key?(:sort)
-          @sort = session[:ratings]
+          @sort = session[:sort]
           @ratings = params[:ratings]
           redirect_to movies_path(sort: @sort, ratings: @ratings) and return
         end
@@ -48,10 +47,10 @@ class MoviesController < ApplicationController
           redirect_to movies_path(sort: @sort, ratings: @ratings) and return
         end
       end
-      #############
+      ############
       if params.key?(:ratings)
         @ratings_to_show = params[:ratings].keys()
-        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
+        # @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       end
 
       @movies = Movie.with_ratings(@ratings_to_show)
@@ -60,6 +59,7 @@ class MoviesController < ApplicationController
       @release_date_header = ''
 
       if params.has_key?(:sort)
+        session[:sort] = params[:sort]
         #@movies = @movies.order(params[:sort])
         if params[:sort] == 'title'
           @movies = @movies.order('title')
@@ -96,23 +96,29 @@ class MoviesController < ApplicationController
 
     end
 
-    def index
+    def index_f
       @all_ratings = Movie.all_ratings
-      @ratings_to_show = []
+      @ratings_to_show = [] #@all_ratings
+      # @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
 
-      ratings = ''
-      sort = ''
+      # ratings = ''
+      # sort = ''
+      if params.key?(:ratings) and (params[:ratings].is_a?(Hash) == false)
+        @h = params[:ratings]
+        params[:ratings] = Hash[@h.map {|k| [k, 1]}]
+      end
 
       if params.key?(:ratings)
         session[:ratings] = params[:ratings]
         @ratings_to_show = params[:ratings].keys()
-        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
+        # @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       elsif session.key?(:ratings)
         ratings = session[:ratings]
-        redirect_to movies_path(:ratings => ratings) and return
+        redirect_to movies_path(ratings: ratings) #and return
+    
       else
         @ratings_to_show = @all_ratings
-        @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
+        # @ratings_to_show_hash = Hash[@ratings_to_show.map {|k| [k, 1]}]
       end
 
       @movies = Movie.with_ratings(@ratings_to_show)
@@ -132,14 +138,8 @@ class MoviesController < ApplicationController
           @release_date_bg = 'hilite bg-warning'
         end
       elsif session.key?(:sort)
-        if session[:sort] == 'title'
-          @movies = @movies.order('title')
-          @title_bg = 'hilite bg-warning'
-        end
-        if session[:sort] == 'release_date'
-          @movies = @movies.order('release_date')
-          @release_date_bg = 'hilite bg-warning'
-        end
+        sort = session[:sort]
+        redirect_to movies_path(:sort => sort) #and return
       else 
         return
       end
@@ -148,6 +148,7 @@ class MoviesController < ApplicationController
     def new
       # default: render 'new' template
     end
+
   
     def create
       @movie = Movie.create!(movie_params)
